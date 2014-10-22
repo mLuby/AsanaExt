@@ -17,7 +17,7 @@ chrome.tabs.onUpdated.addListener(function(tabID, changeInfo, tab){
       chrome.pageAction.show(tab.id);
 
       // inject the content script onto the page
-      chrome.tabs.executeScript(null, {"file": "foldAsana.js"});
+      chrome.tabs.executeScript(null, {"file": "toggleSection.js"});
     }
   } 
 });

@@ -9,8 +9,8 @@
     "persistent": false
   },
   "page_action": {
-    "default_name": "Fold Asana",
-    "default_icon": "fold.png"
+    "default_name": "Asana Extensions",
+    "default_icon": "asana++.png"
   },
   "icons": {
     "128": "fold.png"
