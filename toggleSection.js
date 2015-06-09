@@ -1,3 +1,7 @@
+var zeroWidthSpace = '​' // a zero width space is between these: >​<
+
+var hiddenTasks = [];
+
 var checkIfDOMLoadedInterval;
 checkIfDOMLoadedInterval = setInterval(checkIfDOMLoaded, 250);
 function checkIfDOMLoaded(){
@@ -15,34 +19,46 @@ function onDOMLoaded(){
   var style = document.createElement('style');
   document.head.appendChild(style);
   // add bar-collapsed, bar-uncollapsed CSS classes
-  style.sheet.addRule('.bar::before',   "content: '▼'; color: black; position: relative; top: 6px; left: 10px;");
-  style.sheet.addRule('.bar-collapsed::before', "content: '▶'; color: red; position: relative; top: 6px; left: 10px;");
+  style.sheet.addRule('.bar::before',   "content: '▼'; color: #AAA; position: relative; top: 5px; left: 11px;");
+  style.sheet.addRule('.bar-collapsed::before', "content: '▶'; color: #AAA; position: relative; top: 5px; left: 11px; font-size: 10px;");
+  style.sheet.addRule('.row-hiding', "display: none;");
 
   // get bar-rows
   var bars = document.querySelectorAll('.bar-row');
   // for each bar-row, add on click listener
   for (var i = 0; i < bars.length; i++) {
     // on clicking a bar-row
-    bars[i].addEventListener('click', toggleSubsequentTasks);
-    bars[i].classList.add('bar-uncollapsed');
+    var bar = bars[i];
+    bar.addEventListener('click', toggleSubsequentTasks);
     console.log('Added event listener to pre-loaded bar.');
   }
   function toggleSubsequentTasks(){
     // iterate through tasks
     var clickedElement = this;
-    console.log('clicked this:', clickedElement);
     var rows = document.querySelectorAll('table#grid>tbody>tr');
     var reachedSection = false;
-    var hiding;
 
     for(var i=0; i<rows.length-1; i++){ // -1 ignores final 'add another task' psuedo-task.
-      if(reachedSection && rows[i].classList.contains('bar-row')){
+      var row = rows[i];
+
+      if(reachedSection && row.classList.contains('bar-row')){
         reachedSection = false;
       }
       if(reachedSection){
-        hiding ? rows[i].style['display'] = 'none' : rows[i].setAttribute('style','');
+        row.classList.toggle('row-hiding');
+
+        var index = hiddenTasks.indexOf(row)
+        if(~index){
+          hiddenTasks.splice(index, 1); // remove element from array
+          row.classList.remove('row-hiding'); // stop hiding
+        } else {
+          hiddenTasks.push(row); // add element to array
+        }
+
+        hideElements(hiddenTasks);
       }
-      if(clickedElement === rows[i]){
+
+      if(clickedElement === row){
         reachedSection = true;
         // toggle hiding
         var togglingBar = clickedElement.querySelector('.bar');
@@ -58,6 +74,8 @@ function onDOMLoaded(){
 
   // create an observer instance
   var observer = new MutationObserver(function(mutations) {
+    hideElements(hiddenTasks); // always rehide hidden tasks when DOM mutates.
+
     mutations
       .map(function(mutation) {
         if(typeof mutation.addedNodes[0] === 'object'){
@@ -76,4 +94,10 @@ function onDOMLoaded(){
 
   // pass in the target node, as well as the observer options
   observer.observe(target, config);
+
+  function hideElements(elements){
+    elements.forEach(function(element){
+      x.classList.add('row-hiding');
+    });
+  }
 };
