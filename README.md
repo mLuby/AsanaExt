@@ -1,6 +1,8 @@
 Asana Extensions
 ========
 
+![asana](http://media.giphy.com/media/l41lOdgSFRqHRhlu0/giphy.gif)
+
 ![asana](https://cloud.githubusercontent.com/assets/2483420/8974899/0ed60162-362c-11e5-8d30-9cbad4d383d7.gif)
 
 ##About##
